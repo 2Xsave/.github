@@ -32,11 +32,11 @@
 
 | Platform | Repository | Status | Engine |
 | :--- | :--- | :--- | :--- |
-| **TikTok** | [`ttsave_core`](https://github.com/2Xsave/ttsave_core) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **Instagram** | [`insave_core`](https://github.com/2Xsave/insave_core) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **Threads** | [`trsave_core`](https://github.com/2Xsave/trsave_core) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **X (Twitter)** | [`twsave_core`](https://github.com/2Xsave/twsave_core) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **SoundCloud** | [`sksave_core`](https://github.com/2Xsave/sksave_core) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
+| **TikTok** | [`ttsave`](https://github.com/2Xsave/ttsave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
+| **Instagram** | [`insave`](https://github.com/2Xsave/insave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
+| **Threads** | [`trsave`](https://github.com/2Xsave/trsave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
+| **X (Twitter)** | [`twsave`](https://github.com/2Xsave/twsave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
+| **SoundCloud** | [`sksave`](https://github.com/2Xsave/sksave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
 | **Common** | [`2xsave_common`](https://github.com/2Xsave/2xsave_common) | ![Stable](https://img.shields.io/badge/-stable-blue?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
 
 ---
