@@ -1,92 +1,74 @@
-<div align="center">
+# 2Xsave
 
-# 🛠️ 2Xsave Organization
-**High-performance media research & automation engines powered by Rust**
+Rust libraries for downloading publicly accessible media from social platforms.
 
-[![Organization](https://img.shields.io/badge/Org-2Xsave-blueviolet?style=for-the-badge&logo=github)](https://github.com/2Xsave)
-[![Tech Stack](https://img.shields.io/badge/Stack-Rust%20%7C%20Python-orange?style=for-the-badge)](https://rust-lang.org)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
+Each platform has its own crate with the same shape: a small async core that you can use
+as a Rust library, as a command-line tool, or as a Python module through PyO3.
 
----
-<p align="center">
-  <a href="#-projects">Projects</a> •
-  <a href="#-architecture">Architecture</a> •
-  <a href="#-tech-stack">Stack</a> •
-  <a href="#-roadmap">Roadmap</a>
-</p>
+## Projects
 
-</div>
+| Platform | Repository | Interfaces |
+| --- | --- | --- |
+| TikTok — video, photo carousels, audio | [`ttsave`](https://github.com/2Xsave/ttsave) | Library · CLI · Python |
+| Instagram — reels, posts, carousels | [`insave`](https://github.com/2Xsave/insave) | Library · CLI · Python |
+| Threads — video, photo carousels | [`trsave`](https://github.com/2Xsave/trsave) | Library · CLI · Python |
+| X (Twitter) — video, photos, text posts | [`twsave`](https://github.com/2Xsave/twsave) | Library · Python |
+| SoundCloud — MP3 tracks | [`sksave`](https://github.com/2Xsave/sksave) | Library · CLI · Python |
+| Shared configuration, HTTP and types | [`2xsave_common`](https://github.com/2Xsave/2xsave_common) | Library |
+| Terminal UI over all five cores | [`2XsaveTUI`](https://github.com/2Xsave/2XsaveTUI) | Application |
 
-## 📖 О нас
+## Status
 
-**2Xsave** — исследовательская группа, специализирующаяся на глубоком анализе медиаплатформ. Мы превращаем сложные реверс-инжиниринговые задачи в элегантные и быстрые инструменты на Rust.
+Everything here is version `0.1.0` and nothing is published to crates.io yet. The public
+API still changes between commits, so depend on the git repositories directly and pin a
+revision if you need stability.
 
-> [!CAUTION]
-> **Disclaimer:** Наши инструменты предназначены исключительно для образовательных целей и личного использования. Мы не поддерживаем пиратство.
-
----
-
-## 🚀 Projects
-
-Мы упаковываем каждый сервис в отдельное «ядро» (`core`), которое можно использовать как CLI-утилиту или библиотеку.
-
-| Platform | Repository | Status | Engine |
-| :--- | :--- | :--- | :--- |
-| **TikTok** | [`ttsave`](https://github.com/2Xsave/ttsave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **Instagram** | [`insave`](https://github.com/2Xsave/insave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **Threads** | [`trsave`](https://github.com/2Xsave/trsave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **X (Twitter)** | [`twsave`](https://github.com/2Xsave/twsave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **SoundCloud** | [`sksave`](https://github.com/2Xsave/sksave) | ![Active](https://img.shields.io/badge/-active-success?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-| **Common** | [`2xsave_common`](https://github.com/2Xsave/2xsave_common) | ![Stable](https://img.shields.io/badge/-stable-blue?style=flat-square) | ![Rust](https://img.shields.io/badge/-Rust-brown?style=flat-square&logo=rust) |
-
----
-
-## 🏗 Architecture
-
-Наша экосистема построена на принципе **"Three-Tier Access"**:
-
-```mermaid
-graph LR
-    A[Rust Core] --> B[CLI Tool]
-    A --> C[Native Rust Crate]
-    A --> D[Python Module via PyO3]
-
+```toml
+[dependencies]
+ttsave_core = { git = "https://github.com/2Xsave/ttsave", rev = "..." }
 ```
 
-* **⚡ Speed:** Нулевая стоимость абстракций.
-* **🐍 Versatility:** Используйте мощь Rust в своих Python-скриптах.
-* **🛠 Modular:** Общая логика в `2xsave_common` обеспечивает единство API.
+## How the crates are put together
 
----
+```
+                         2xsave_common
+       shared config loading, HTTP client, common types
+                               |
+     +------------+------------+------------+------------+
+     |            |            |            |            |
+ttsave_core  insave_core  trsave_core  twsave_core  sksave_core
+     |            |            |            |            |
+     +------------+------------+------------+------------+
+                               |
+                           2XsaveTUI
+              terminal UI driving all five cores
+```
 
-## 🛠 Tech Stack
+Every core works as a Rust library and as a Python module built with maturin; all of
+them except `twsave_core` also ship a CLI binary. Each one exposes the same two entry
+points: `execute_download` writes files to disk, `execute_download_binary` keeps the
+media in memory. Configuration comes from a JSON file and environment variables, with
+environment variables taking priority.
 
-Мы используем только самый современный и безопасный инструментарий:
+`2xsave_common` holds what would otherwise be copied between crates: `RuntimeConfig`,
+the User-Agent constants, the HTTP client builder, and the shared PyO3 boilerplate.
 
-* **Languages:**
+## Roadmap
 
+- Apple Music (`amsave`) — researching the web player API
+- Spotify (`spsave`) — metadata parsing
+- A single CLI wrapper over all cores
+- An optional HTTP proxy server around the cores
 
-* **Async:** [Tokio](https://tokio.rs/) — мощный асинхронный движок.
-* **FFI:** [PyO3](https://pyo3.rs/) — бесшовная интеграция Rust в Python.
-* **Net:** [Reqwest](https://docs.rs/reqwest) + [Serde](https://serde.rs/) — надежная работа с API и JSON.
+## Scope
 
----
+These tools fetch content that is already publicly accessible, for personal and
+educational use. They do not break DRM or paywalls, do not touch private accounts or
+user data, and are not built for bulk scraping.
 
-## 📅 Roadmap
+Downloading someone else's content can still violate a platform's terms of service or
+local copyright law. That part is on you.
 
-* [ ] **AMSAVE:** Исследование Apple Music API (Web Player).
-* [ ] **SPOTIFY:** Начало разработки универсального парсера метаданных.
-* [ ] **CLI-UNIFY:** Единая оболочка для управления всеми модулями из одного терминала.
-* [ ] **WEB-API:** Опциональный легковесный прокси-сервер для модулей.
+## License
 
----
-
-## 🛡 Non-goals
-
-Мы **НЕ** занимаемся следующими вещами:
-
-1. Обход DRM или систем защиты платного контента.
-2. Нарушение приватности пользователей.
-3. Создание инструментов для массового спама или деструктивных действий.
-
----
+MIT.
